@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import itertools
 from scipy.spatial import KDTree
+from scipy.spatial import cKDTree
 import os
 import time
 
@@ -24,7 +25,7 @@ def find_score_for_positions(positions, r, restaurants_tree):
 
 def find_knn(tree, hotel, k_points):
     ind, distance = tree.query([hotel[1], hotel[2]], k=k_points)
-    return [hotel[0], distance[-1]]
+    return [hotel[0], max(ind)]
 
 def find_knn_score_for_positions(hotels, k_points, restaurants_tree):
     positions_data = list()
@@ -69,45 +70,49 @@ def load_data():
     return hotels, restaurants
 
 def choose_random_hotels(hotels_data, n):
-    # np.random.shuffle(hotels_data)
-    return hotels_data[:, [0, 4, 5]][:n]
+    np.random.shuffle(hotels_data)
+    if(n == -1):
+        return hotels_data[:, [0, 4, 5]]
+    else:
+        return hotels_data[:, [0, 4, 5]][:n]
 
 # The radius of points to return.
-radius = 15
+radius = 30
 # Approximate search. Branches of the tree are not explored if their nearest points are further than r / (1 + eps), and branches are added in bulk if their furthest points are nearer than r * (1 + eps).
 eps = 1
 # The number of nearest neighbors to return.
-k = 5
+k = 6
 
 # loading data..
 hotels, restaurants = load_data()
 
 # select random points
-input_hotels = choose_random_hotels(hotels, 3000)
+input_hotels = choose_random_hotels(hotels, -1)
+
 # print 'input data: ' + str(input_hotels.tolist())
 print 'input data: '
 
 start = time.time()
 # indexing
-tree = KDTree(restaurants[:, [3, 4]])
+tree = cKDTree(restaurants[:, [3, 4]], leafsize=1)
 print 'load tree: ' + str((time.time() - start))
 
 
 start = time.time()
 # task 1..
-score_positions = find_score_for_positions(input_hotels, radius, tree)
+# score_positions = find_score_for_positions(input_hotels, radius, tree)
 # print 'task 1: ' + str(sorted(score_positions, key=lambda x: x[1]))
 print 'task 1: ' + str((time.time() - start))
 
 start = time.time()
 # task 2..
 knn_score_positions = find_knn_score_for_positions(input_hotels, k, tree)
-# print 'task 2: ' + str(sorted(knn_score_positions, key=lambda x: x[1]))
+print 'task 2: ' + str(sorted(knn_score_positions, key=lambda x: x[1]))
 print 'task 2: ' + str((time.time() - start))
 
 start = time.time()
 # task 3..
-input_combinations = np.array(get_points_combinations(input_hotels))
-max_distance = (2 * radius)
+# input_combinations = np.array(get_points_combinations(input_hotels))
+# max_distance = (2 * radius)
 # print 'task 3: ' + str(find_neibhor_points(input_combinations, tree, max_distance))
 print 'task 3: ' + str((time.time() - start))
