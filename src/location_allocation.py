@@ -89,9 +89,6 @@ hotels, restaurants = load_data()
 # select random points
 input_hotels = choose_random_hotels(hotels, -1)
 
-# print 'input data: ' + str(input_hotels.tolist())
-print 'input data: '
-
 start = time.time()
 # indexing
 tree = cKDTree(restaurants[:, [3, 4]], leafsize=1)
@@ -100,8 +97,8 @@ print 'load tree: ' + str((time.time() - start))
 
 start = time.time()
 # task 1..
-# score_positions = find_score_for_positions(input_hotels, radius, tree)
-# print 'task 1: ' + str(sorted(score_positions, key=lambda x: x[1]))
+score_positions = find_score_for_positions(input_hotels, radius, tree)
+print 'task 1: ' + str(sorted(score_positions, key=lambda x: x[1]))
 print 'task 1: ' + str((time.time() - start))
 
 start = time.time()
@@ -112,7 +109,7 @@ print 'task 2: ' + str((time.time() - start))
 
 start = time.time()
 # task 3..
-# input_combinations = np.array(get_points_combinations(input_hotels))
-# max_distance = (2 * radius)
-# print 'task 3: ' + str(find_neibhor_points(input_combinations, tree, max_distance))
+input_combinations = np.array(get_points_combinations(input_hotels))
+max_distance = (2 * radius)
+print 'task 3: ' + str(find_neibhor_points(input_combinations, tree, max_distance))
 print 'task 3: ' + str((time.time() - start))
