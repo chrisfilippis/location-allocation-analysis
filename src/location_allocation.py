@@ -116,7 +116,7 @@ def task_2(k, hotels_number):
 
     return task_time
 
-def task_3(radius, k, hotels_number):
+def task_3(radius, hotels_number):
     # loading data..
     hotels, restaurants = load_data()
 
@@ -202,7 +202,16 @@ def tests_for_k_task2():
 
     print results
 
+def tests_for_task3():
+    radius_tests = [2, 4, 6, 8, 10]
+    results = list()
+    for test in radius_tests:
+        results.append([test, task_3(test, 100)])
+
+    print results
+
 tests_for_m_task1()
 tests_for_radius_task1()
 tests_for_m_task2()
 tests_for_k_task2()
+tests_for_task3()
