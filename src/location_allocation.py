@@ -5,6 +5,7 @@ from scipy.spatial import KDTree
 from scipy.spatial import cKDTree
 import os
 import time
+import matplotlib.pyplot as plt
 
 # Which Minkowski p-norm to use. Should be in the range [1, inf].
 p_norm = 2 #float('inf')
@@ -53,7 +54,10 @@ def find_neibhor_points(combinations, kd_tree, radius, max_distance):
 
         first_point_nearest = find_nearest_core(kd_tree, radius, combination[0])
         second_point_nearest = find_nearest_core(kd_tree, radius, combination[1])
+        print 'first_point_nearest ' + str(len(first_point_nearest))
+        print 'second_point_nearest ' + str(len(second_point_nearest))
         score = len(set().union(first_point_nearest, second_point_nearest))
+        print 'score ' + str((score))
         result.append([combination[0][0], combination[1][0], score])
 
     if(len(result) == 0):
@@ -133,6 +137,10 @@ def task_3(radius, hotels_number):
     result = find_neibhor_points(input_combinations, tree, radius, max_distance)
     task_time = time.time() - start
 
+    print input_combinations
+    print 'result'
+    print result
+
     return task_time, result
 
 def run_all_task(radius, k, hotels_number):
@@ -169,12 +177,18 @@ def run_all_task(radius, k, hotels_number):
     return task1_time, task2_time, task3_time
 
 def tests_for_m_task1():
-    m_tests = [500, 1000, 1500, 2000, -1]
+    m_tests = [500, 1000, 1500, 2000, 5000]
     results = list()
     for test in m_tests:
         results.append([test, task_1(1, test)])
 
     print results
+    data = np.array(results)
+    plt.plot(data[:,0], data[:,1])
+    plt.xlabel('number of hotels')
+    plt.ylabel('time (sec)')
+    plt.show()
+    return np.array(results)
 
 def tests_for_radius_task1():
     radius_tests = [1, .1, .01, .001]
@@ -183,34 +197,53 @@ def tests_for_radius_task1():
         results.append([test, task_1(test, -1)])
 
     print results
+    data = np.array(results)
+    plt.plot(data[:,0], data[:,1])
+    plt.xlabel('radius')
+    plt.ylabel('time (sec)')
+    plt.show()
+    return np.array(results)
 
 def tests_for_m_task2():
-    m_tests = [500, 1000, 1500, 2000, -1]
+    m_tests = [500, 1000, 1500, 2000, 5000]
     results = list()
     for test in m_tests:
         results.append([test, task_2(5, test)])
 
     print results
+    data = np.array(results)
+    plt.plot(data[:,0], data[:,1])
+    plt.xlabel('number of hotels')
+    plt.ylabel('time (sec)')
+    plt.show()
+    return np.array(results)
 
 def tests_for_k_task2():
-    radius_tests = [2, 4, 6, 8, 10]
+    radius_tests = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22]
     results = list()
     for test in radius_tests:
         results.append([test, task_2(test, -1)])
 
     print results
+    data = np.array(results)
+    plt.plot(data[:,0], data[:,1])
+    plt.xlabel('k')
+    plt.ylabel('time (sec)')
+    plt.show()
+    return np.array(results)
 
 def tests_for_task3():
-    radius_tests = [2, 4, 6, 8, 10]
+    radius_tests = [20]
     results = list()
     for test in radius_tests:
-        results.append([test, task_3(test, 100)])
+        results.append([test, task_3(test, 3)])
 
     print results
+    #return np.array(results)
 
 # hello all
-tests_for_m_task1()
+#tests_for_m_task1()
 #tests_for_radius_task1()
 #tests_for_m_task2()
 #tests_for_k_task2()
-#tests_for_task3()
+tests_for_task3()
