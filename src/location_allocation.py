@@ -8,7 +8,8 @@ import time
 import matplotlib.pyplot as plt
 
 # Which Minkowski p-norm to use. Should be in the range [1, inf].
-p_norm = 2 #float('inf')
+p_norm = 2
+leafsize = 10
 
 def find_nearest_core(kd_tree, r, point, pnorm=2):
     idx = kd_tree.query_ball_point([point[1], point[2]], r=r, p=pnorm)
@@ -54,10 +55,7 @@ def find_neibhor_points(combinations, kd_tree, radius, max_distance):
 
         first_point_nearest = find_nearest_core(kd_tree, radius, combination[0])
         second_point_nearest = find_nearest_core(kd_tree, radius, combination[1])
-        print 'first_point_nearest ' + str(len(first_point_nearest))
-        print 'second_point_nearest ' + str(len(second_point_nearest))
         score = len(set().union(first_point_nearest, second_point_nearest))
-        print 'score ' + str((score))
         result.append([combination[0][0], combination[1][0], score])
 
     if(len(result) == 0):
@@ -88,7 +86,7 @@ def task_1(radius, hotels_number):
     input_hotels = choose_random_hotels(hotels, hotels_number)
 
     # indexing
-    tree = cKDTree(restaurants[:, [3, 4]], leafsize=10)
+    tree = cKDTree(restaurants[:, [3, 4]], leafsize=leafsize)
 
     start = time.time()
     # task 1..
@@ -108,7 +106,7 @@ def task_2(k, hotels_number):
     start = time.time()
 
     # indexing
-    tree = cKDTree(restaurants[:, [3, 4]], leafsize=10)
+    tree = cKDTree(restaurants[:, [3, 4]], leafsize=leafsize)
 
     start = time.time()
     # task 2..
@@ -128,7 +126,7 @@ def task_3(radius, hotels_number):
     start = time.time()
 
     # indexing
-    tree = cKDTree(restaurants[:, [3, 4]], leafsize=10)
+    tree = cKDTree(restaurants[:, [3, 4]], leafsize=leafsize)
 
     start = time.time()
 
@@ -136,12 +134,13 @@ def task_3(radius, hotels_number):
     max_distance = (2 * radius)
     result = find_neibhor_points(input_combinations, tree, radius, max_distance)
     task_time = time.time() - start
+    
+    if(len(result) < 2 or len(result[1]) == 0):
+        return []
 
-    print input_combinations
-    print 'result'
-    print result
+    best_combination = [result[1][0], result[1][1]] 
 
-    return task_time, result
+    return [task_time, best_combination]
 
 def run_all_task(radius, k, hotels_number):
     # loading data..
@@ -153,7 +152,7 @@ def run_all_task(radius, k, hotels_number):
     start = time.time()
 
     # indexing
-    tree = cKDTree(restaurants[:, [3, 4]], leafsize=10)
+    tree = cKDTree(restaurants[:, [3, 4]], leafsize=leafsize)
 
     start = time.time()
     # task 1..
@@ -233,10 +232,13 @@ def tests_for_k_task2():
     return np.array(results)
 
 def tests_for_task3():
-    radius_tests = [20]
+    radius_tests = [1, .1, .01, .001]
     results = list()
     for test in radius_tests:
-        results.append([test, task_3(test, 3)])
+        data = task_3(test, 1000)
+        if(len(data) == 0):
+            return []
+        results.append([test, data[0], data[1]])
 
     print results
     #return np.array(results)
