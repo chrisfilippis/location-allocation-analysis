@@ -76,14 +76,12 @@ def choose_random_hotels(hotels_data, n):
     else:
         return hotels_data[:, [0, 4, 5]][:n]
 
-def task_1(radius, k, hotels_number):
+def task_1(radius, hotels_number):
     # loading data..
     hotels, restaurants = load_data()
 
     # select random points
     input_hotels = choose_random_hotels(hotels, hotels_number)
-
-    start = time.time()
 
     # indexing
     tree = cKDTree(restaurants[:, [3, 4]], leafsize=10)
@@ -174,7 +172,7 @@ def tests_for_m_task1():
     m_tests = [500, 1000, 1500, 2000, -1]
     results = list()
     for test in m_tests:
-        results.append([test, task_1(1, 10, test)])
+        results.append([test, task_1(1, test)])
 
     print results
 
@@ -182,7 +180,7 @@ def tests_for_radius_task1():
     radius_tests = [1, .1, .01, .001]
     results = list()
     for test in radius_tests:
-        results.append([test, task_1(test, 10, -1)])
+        results.append([test, task_1(test, -1)])
 
     print results
 
@@ -212,7 +210,7 @@ def tests_for_task3():
 
 # hello all
 tests_for_m_task1()
-tests_for_radius_task1()
-tests_for_m_task2()
-tests_for_k_task2()
-tests_for_task3()
+#tests_for_radius_task1()
+#tests_for_m_task2()
+#tests_for_k_task2()
+#tests_for_task3()
