@@ -88,8 +88,9 @@ def task_1(tree, hotels, radius, hotels_number):
     start = time.time()
     # task 1..
     score_positions = find_score_for_positions(input_hotels, radius, tree)
-    sorted(score_positions, key=lambda x: x[1])
+    sorted_scores = sorted(score_positions, key=lambda x: x[1], reverse=True)
     task_time = time.time() - start
+    print sorted_scores
 
     return task_time
 
@@ -101,6 +102,7 @@ def task_2(tree, hotels, k, hotels_number):
     # task 2..
     knn_score_positions = find_knn_score_for_positions(input_hotels, k, tree)
     sorted(knn_score_positions, key=lambda x: x[1])
+    #print knn_score_positions
     task_time = time.time() - start
 
     return task_time
@@ -124,7 +126,7 @@ def task_3(tree, hotels, radius, hotels_number):
     return [task_time, best_combination]
 
 def tests_for_m_task1(tree, hotels):
-    m_tests = [500, 1000, 1500, 2000, 5000]
+    m_tests = [5, 10, 15]
     results = list()
     for test in m_tests:
         results.append([test, task_1(tree, hotels, 1, test)])
