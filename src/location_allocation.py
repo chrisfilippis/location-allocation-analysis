@@ -71,6 +71,9 @@ def load_data():
     restaurants = pd.read_csv(os.path.join(relative_path, '../data/restaurants-ver1.txt'), sep="|", header=1, names = ['id','name','rating','latitude','longitude','cousine']).as_matrix()
     return hotels, restaurants
 
+def create_tree(restaurants):
+    return cKDTree(restaurants[:, [3, 4]], leafsize=leafsize)
+
 def choose_random_hotels(hotels_data, n):
     np.random.shuffle(hotels_data)
     if(n == -1):
@@ -78,15 +81,9 @@ def choose_random_hotels(hotels_data, n):
     else:
         return hotels_data[:, [0, 4, 5]][:n]
 
-def task_1(radius, hotels_number):
-    # loading data..
-    hotels, restaurants = load_data()
-
+def task_1(tree, hotels, radius, hotels_number):
     # select random points
     input_hotels = choose_random_hotels(hotels, hotels_number)
-
-    # indexing
-    tree = cKDTree(restaurants[:, [3, 4]], leafsize=leafsize)
 
     start = time.time()
     # task 1..
@@ -96,18 +93,10 @@ def task_1(radius, hotels_number):
 
     return task_time
 
-def task_2(k, hotels_number):
-    # loading data..
-    hotels, restaurants = load_data()
-
+def task_2(tree, hotels, k, hotels_number):
     # select random points
     input_hotels = choose_random_hotels(hotels, hotels_number)
-
-    start = time.time()
-
-    # indexing
-    tree = cKDTree(restaurants[:, [3, 4]], leafsize=leafsize)
-
+    
     start = time.time()
     # task 2..
     knn_score_positions = find_knn_score_for_positions(input_hotels, k, tree)
@@ -116,17 +105,9 @@ def task_2(k, hotels_number):
 
     return task_time
 
-def task_3(radius, hotels_number):
-    # loading data..
-    hotels, restaurants = load_data()
-
+def task_3(tree, hotels, radius, hotels_number):
     # select random points
     input_hotels = choose_random_hotels(hotels, hotels_number)
-
-    start = time.time()
-
-    # indexing
-    tree = cKDTree(restaurants[:, [3, 4]], leafsize=leafsize)
 
     start = time.time()
 
@@ -142,44 +123,11 @@ def task_3(radius, hotels_number):
 
     return [task_time, best_combination]
 
-def run_all_task(radius, k, hotels_number):
-    # loading data..
-    hotels, restaurants = load_data()
-
-    # select random points
-    input_hotels = choose_random_hotels(hotels, hotels_number)
-
-    start = time.time()
-
-    # indexing
-    tree = cKDTree(restaurants[:, [3, 4]], leafsize=leafsize)
-
-    start = time.time()
-    # task 1..
-    score_positions = find_score_for_positions(input_hotels, radius, tree)
-    sorted(score_positions, key=lambda x: x[1])
-    task1_time = time.time() - start
-
-    start = time.time()
-    # task 2..
-    knn_score_positions = find_knn_score_for_positions(input_hotels, k, tree)
-    sorted(knn_score_positions, key=lambda x: x[1])
-    task2_time = time.time() - start
-
-    start = time.time()
-    # task 3..
-    input_combinations = np.array(get_points_combinations(input_hotels))
-    max_distance = (2 * radius)
-    find_neibhor_points(input_combinations, tree, radius, max_distance)
-    task3_time = time.time() - start
-
-    return task1_time, task2_time, task3_time
-
-def tests_for_m_task1():
+def tests_for_m_task1(tree, hotels):
     m_tests = [500, 1000, 1500, 2000, 5000]
     results = list()
     for test in m_tests:
-        results.append([test, task_1(1, test)])
+        results.append([test, task_1(tree, hotels, 1, test)])
 
     print results
     data = np.array(results)
@@ -189,11 +137,11 @@ def tests_for_m_task1():
     plt.show()
     return np.array(results)
 
-def tests_for_radius_task1():
+def tests_for_radius_task1(tree, hotels):
     radius_tests = [1, .1, .01, .001]
     results = list()
     for test in radius_tests:
-        results.append([test, task_1(test, -1)])
+        results.append([test, task_1(tree, hotels, test, -1)])
 
     print results
     data = np.array(results)
@@ -203,11 +151,11 @@ def tests_for_radius_task1():
     plt.show()
     return np.array(results)
 
-def tests_for_m_task2():
+def tests_for_m_task2(tree, hotels):
     m_tests = [500, 1000, 1500, 2000, 5000]
     results = list()
     for test in m_tests:
-        results.append([test, task_2(5, test)])
+        results.append([test, task_2(tree, hotels, 5, test)])
 
     print results
     data = np.array(results)
@@ -217,11 +165,11 @@ def tests_for_m_task2():
     plt.show()
     return np.array(results)
 
-def tests_for_k_task2():
+def tests_for_k_task2(tree, hotels):
     radius_tests = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22]
     results = list()
     for test in radius_tests:
-        results.append([test, task_2(test, -1)])
+        results.append([test, task_2(tree, hotels, test, -1)])
 
     print results
     data = np.array(results)
@@ -231,11 +179,11 @@ def tests_for_k_task2():
     plt.show()
     return np.array(results)
 
-def tests_for_task3():
+def tests_for_task3(tree, hotels):
     radius_tests = [1, .1, .01, .001]
     results = list()
     for test in radius_tests:
-        data = task_3(test, 1000)
+        data = task_3(tree, hotels, test, 1000)
         if(len(data) == 0):
             return []
         results.append([test, data[0], data[1]])
@@ -243,9 +191,11 @@ def tests_for_task3():
     print results
     #return np.array(results)
 
-# hello all
-#tests_for_m_task1()
-#tests_for_radius_task1()
-#tests_for_m_task2()
-#tests_for_k_task2()
-tests_for_task3()
+hotels, restaurants = load_data()
+kd_tree = create_tree(restaurants)
+
+tests_for_m_task1(kd_tree, hotels)
+#tests_for_radius_task1(kd_tree, hotels)
+#tests_for_m_task2(kd_tree, hotels)
+#tests_for_k_task2(kd_tree, hotels)
+#tests_for_task3(kd_tree, hotels)
