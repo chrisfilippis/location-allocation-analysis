@@ -96,7 +96,7 @@ def task_1(tree, hotels, radius, hotels_number, save_results=False):
         filename = os.path.join(relative_path, "../data/results/task1/task_" + str(hotels_number) + "_" + str(radius) + ".csv")
         np.savetxt(fname=filename, X=sorted_scores, delimiter=",", fmt='%i', header="id,score", comments='')
 
-    return task_time
+    return task_time, np.average(np.array(sorted_scores)[:,1])
 
 def task_2(tree, hotels, k, hotels_number, save_results=False):
     # select random points
@@ -113,7 +113,7 @@ def task_2(tree, hotels, k, hotels_number, save_results=False):
         filename = os.path.join(relative_path, "../data/results/task2/task_" + str(hotels_number) + "_" + str(k) + ".csv")
         np.savetxt(fname=filename, X=sorted_knn_score_positions, delimiter=",", fmt='%i', header="id,score", comments='')
 
-    return task_time
+    return task_time, np.average(np.array(sorted_knn_score_positions)[:,1])
 
 def task_3(tree, hotels, radius, hotels_number, save_results=False):
     # select random points
@@ -142,39 +142,73 @@ def task_3(tree, hotels, radius, hotels_number, save_results=False):
 def tests_for_m_task1(tree, hotels):
     m_tests = [5000, 10000, 15000, 20000, 30000]
     results = list()
+    scores = list()
     for test in m_tests:
-        results.append([test, task_1(tree, hotels, 1, test, True)])
+        result, avg_score = task_1(tree, hotels, 1, test, True)
+        results.append([test, result])
+        scores.append([test, avg_score])
+
+    data = np.array(results)
+    scores_data = np.array(scores)
 
     print results
-    data = np.array(results)
+    
+    plt.plot(scores_data[:,0], scores_data[:,1])
+    plt.xlabel('number of hotels')
+    plt.ylabel('avg. score')
+    plt.show()
+
+
     plt.plot(data[:,0], data[:,1])
     plt.xlabel('number of hotels')
     plt.ylabel('time (sec)')
     plt.show()
-    return np.array(results)
+    return data
 
 def tests_for_radius_task1(tree, hotels):
     radius_tests = [1, .1, .01, .001]
     results = list()
+    scores = list()
     for test in radius_tests:
-        results.append([test, task_1(tree, hotels, test, -1, True)])
+        result, avg_score = task_1(tree, hotels, test, -1, True)
+        results.append([test, result])
+        scores.append([test, avg_score])
+
+    data = np.array(results)
+    scores_data = np.array(scores)
+    
+    plt.plot(scores_data[:,0], scores_data[:,1])
+    plt.xlabel('radius')
+    plt.ylabel('avg. score')
+    plt.show()
 
     print results
-    data = np.array(results)
+
     plt.plot(data[:,0], data[:,1])
     plt.xlabel('radius')
     plt.ylabel('time (sec)')
     plt.show()
-    return np.array(results)
+    return data
 
 def tests_for_m_task2(tree, hotels):
-    m_tests = [500, 1000, 1500, 2000, 5000]
+    m_tests = [5000, 10000, 15000, 20000, 30000]
     results = list()
+    scores = list()
     for test in m_tests:
-        results.append([test, task_2(tree, hotels, 5, test, True)])
+        result, avg_score = task_2(tree, hotels, 5, test, True)
+        results.append([test, result])
+        scores.append([test, avg_score])
+
+    data = np.array(results)
+    scores_data = np.array(scores)
+    
+    plt.plot(scores_data[:,0], scores_data[:,1])
+    plt.xlabel('number of hotels')
+    plt.ylabel('avg. score')
+    plt.show()
 
     print results
-    data = np.array(results)
+
     plt.plot(data[:,0], data[:,1])
     plt.xlabel('number of hotels')
     plt.ylabel('time (sec)')
@@ -182,17 +216,30 @@ def tests_for_m_task2(tree, hotels):
     return np.array(results)
 
 def tests_for_k_task2(tree, hotels):
-    radius_tests = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22]
+    k_tests = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22]
     results = list()
-    for test in radius_tests:
-        results.append([test, task_2(tree, hotels, test, -1, True)])
+    scores = list()
+    for test in k_tests:
+        result, avg_score = task_2(tree, hotels, test, -1, True)
+        results.append([test, result])
+        scores.append([test, avg_score])
+
+    
+    data = np.array(results)
+    scores_data = np.array(scores)
+
+    plt.plot(scores_data[:,0], scores_data[:,1])
+    plt.xlabel('k')
+    plt.ylabel('avg. score')
+    plt.show()
 
     print results
-    data = np.array(results)
+
     plt.plot(data[:,0], data[:,1])
     plt.xlabel('k')
     plt.ylabel('time (sec)')
     plt.show()
+    
     return np.array(results)
 
 def tests_for_task3(tree, hotels):
@@ -209,8 +256,8 @@ def tests_for_task3(tree, hotels):
 hotels, restaurants = load_data()
 kd_tree = create_tree(restaurants)
 
-tests_for_m_task1(kd_tree, hotels)
-#tests_for_radius_task1(kd_tree, hotels)
-#tests_for_m_task2(kd_tree, hotels)
-#tests_for_k_task2(kd_tree, hotels)
-#tests_for_task3(kd_tree, hotels)
+# tests_for_m_task1(kd_tree, hotels)
+# tests_for_radius_task1(kd_tree, hotels)
+tests_for_m_task2(kd_tree, hotels)
+# tests_for_k_task2(kd_tree, hotels)
+# tests_for_task3(kd_tree, hotels)

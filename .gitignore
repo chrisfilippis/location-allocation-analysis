@@ -99,3 +99,7 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+data/results/task1/*
+data/results/task2/*
+data/results/task3/*
