@@ -140,7 +140,7 @@ def task_3(tree, hotels, radius, hotels_number, save_results=False):
     return [task_time, best_combination]
 
 def tests_for_m_task1(tree, hotels):
-    m_tests = [5, 10, 15]
+    m_tests = [5000, 10000, 15000, 20000, 30000]
     results = list()
     for test in m_tests:
         results.append([test, task_1(tree, hotels, 1, test, True)])
