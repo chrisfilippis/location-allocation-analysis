@@ -261,3 +261,4 @@ kd_tree = create_tree(restaurants)
 tests_for_m_task2(kd_tree, hotels)
 # tests_for_k_task2(kd_tree, hotels)
 # tests_for_task3(kd_tree, hotels)
+# test
