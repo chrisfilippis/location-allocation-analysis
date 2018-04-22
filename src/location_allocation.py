@@ -193,7 +193,7 @@ def tests_for_radius_task1(tree, hotels):
 def tests_for_m_task2(tree, hotels):
     m_tests = [5000, 10000, 15000, 20000, 30000]
     results = list()
-    scores = list()
+    scores = list() 
     for test in m_tests:
         result, avg_score = task_2(tree, hotels, 5, test, True)
         results.append([test, result])
