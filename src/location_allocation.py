@@ -74,7 +74,7 @@ def load_data():
 def create_tree(restaurants):
     return cKDTree(restaurants[:, [3, 4]], leafsize=leafsize)
 
-def choose_random_hotels(hotels_data, n):
+def choose_hotels(hotels_data, n):
     # np.random.shuffle(hotels_data)
     if(n == -1):
         return hotels_data[:, [0, 4, 5]]
@@ -83,7 +83,7 @@ def choose_random_hotels(hotels_data, n):
 
 def task_1(tree, hotels, radius, hotels_number, save_results=False):
     # select random points
-    input_hotels = choose_random_hotels(hotels, hotels_number)
+    input_hotels = choose_hotels(hotels, hotels_number)
 
     start = time.time()
     # task 1..
@@ -100,7 +100,7 @@ def task_1(tree, hotels, radius, hotels_number, save_results=False):
 
 def task_2(tree, hotels, k, hotels_number, save_results=False):
     # select random points
-    input_hotels = choose_random_hotels(hotels, hotels_number)
+    input_hotels = choose_hotels(hotels, hotels_number)
     
     start = time.time()
     # task 2..
@@ -117,7 +117,7 @@ def task_2(tree, hotels, k, hotels_number, save_results=False):
 
 def task_3(tree, hotels, radius, hotels_number, save_results=False):
     # select random points
-    input_hotels = choose_random_hotels(hotels, hotels_number)
+    input_hotels = choose_hotels(hotels, hotels_number)
 
     start = time.time()
 
@@ -163,6 +163,7 @@ def tests_for_m_task1(tree, hotels):
     plt.xlabel('number of hotels')
     plt.ylabel('time (sec)')
     plt.show()
+
     return data
 
 def tests_for_radius_task1(tree, hotels):
@@ -188,6 +189,7 @@ def tests_for_radius_task1(tree, hotels):
     plt.xlabel('radius')
     plt.ylabel('time (sec)')
     plt.show()
+
     return data
 
 def tests_for_m_task2(tree, hotels):
@@ -213,7 +215,7 @@ def tests_for_m_task2(tree, hotels):
     plt.xlabel('number of hotels')
     plt.ylabel('time (sec)')
     plt.show()
-    return np.array(results)
+    return data
 
 def tests_for_k_task2(tree, hotels):
     k_tests = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22]
@@ -240,25 +242,69 @@ def tests_for_k_task2(tree, hotels):
     plt.ylabel('time (sec)')
     plt.show()
     
-    return np.array(results)
+    return data
 
-def tests_for_task3(tree, hotels):
+def tests_for_radius_task3(tree, hotels):
     radius_tests = [1, .1, .01, .001]
     results = list()
+    display_result = list()
     for test in radius_tests:
-        data = task_3(tree, hotels, test, 100, True)
+        data = task_3(tree, hotels, test, 1000, True)
+        print data
         if(len(data) == 0):
-            return []
-        results.append([test, data[0], data[1]])
+            results.append([test])
+        else:
+            display_result.append([test, data[0]])
+            results.append([test, data[0], data[1]])
 
     print results
 
+    display_result = np.array(display_result)
+
+    plt.plot(display_result[:,0], display_result[:,1])
+    plt.xlabel('radius')
+    plt.ylabel('time (sec)')
+    plt.show()
+
+def tests_for_m_task3(tree, hotels):
+    m_tests = [5000, 10000, 15000, 20000, 25000]
+    results = list()
+    display_result = list()
+    for test in m_tests:
+        data = task_3(tree, hotels, 0.005, test, True)
+        if(len(data) == 0):
+            results.append([test])
+        else:
+            display_result.append([test, data[0]])
+            results.append([test, data[0], data[1]])
+
+    print results
+
+    display_result = np.array(display_result)
+
+    plt.plot(display_result[:,0], display_result[:,1])
+    plt.xlabel('number of hotels')
+    plt.ylabel('time (sec)')
+    plt.show()
+
+# load hotels and restaurants
 hotels, restaurants = load_data()
 kd_tree = create_tree(restaurants)
 
-# tests_for_m_task1(kd_tree, hotels)
-# tests_for_radius_task1(kd_tree, hotels)
+# test for task 1 changing number of hotels
+tests_for_m_task1(kd_tree, hotels)
+exit()
+# test for task 1 changing radius
+tests_for_radius_task1(kd_tree, hotels)
+
+# test for task 2 changing number of hotels
 tests_for_m_task2(kd_tree, hotels)
-# tests_for_k_task2(kd_tree, hotels)
-# tests_for_task3(kd_tree, hotels)
-# test
+
+# test for task 2 changing number of nearest neighbors
+tests_for_k_task2(kd_tree, hotels)
+
+# test for task 3 changing radius
+tests_for_radius_task3(kd_tree, hotels)
+
+# test for task 3 changing number of hotels
+tests_for_m_task3(kd_tree, hotels)
