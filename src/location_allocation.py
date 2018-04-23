@@ -293,7 +293,7 @@ kd_tree = create_tree(restaurants)
 
 # test for task 1 changing number of hotels
 tests_for_m_task1(kd_tree, hotels)
-exit()
+
 # test for task 1 changing radius
 tests_for_radius_task1(kd_tree, hotels)
 
