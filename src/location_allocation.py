@@ -82,7 +82,7 @@ def choose_hotels(hotels_data, n):
         return hotels_data[:, [0, 4, 5]][:n]
 
 def task_1(tree, hotels, radius, hotels_number, save_results=False):
-    # select random points
+    # select points
     input_hotels = choose_hotels(hotels, hotels_number)
 
     start = time.time()
@@ -99,7 +99,7 @@ def task_1(tree, hotels, radius, hotels_number, save_results=False):
     return task_time, np.average(np.array(sorted_scores)[:,1])
 
 def task_2(tree, hotels, k, hotels_number, save_results=False):
-    # select random points
+    # select points
     input_hotels = choose_hotels(hotels, hotels_number)
     
     start = time.time()
@@ -116,7 +116,7 @@ def task_2(tree, hotels, k, hotels_number, save_results=False):
     return task_time, np.average(np.array(sorted_knn_score_positions)[:,1])
 
 def task_3(tree, hotels, radius, hotels_number, save_results=False):
-    # select random points
+    # select points
     input_hotels = choose_hotels(hotels, hotels_number)
 
     start = time.time()
